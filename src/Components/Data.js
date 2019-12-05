@@ -4,7 +4,7 @@ import details from './Details.json';
 
 class Data extends Component {
     
-    
+
         constructor(props) {
             super(props);
             this.state = {
@@ -13,7 +13,8 @@ class Data extends Component {
             };
         }
         componentDidMount() {
-            fetch("http://localhost:4000/details")
+            
+            axios.get("http://localhost:4000/details")
                 .then(res => res.json())
                 .then(json => {
                     this.setState({
@@ -25,7 +26,7 @@ class Data extends Component {
         render() {
             var {isLoaded,items } =this.state;
             if(!isLoaded) {
-                return <div>LOading.....</div>;
+                return <div>Loading.....</div>;
             }
             else{
                 return(

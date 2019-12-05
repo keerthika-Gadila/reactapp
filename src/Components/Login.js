@@ -3,30 +3,38 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import details from '../Data/Details.json';
-import Api from './Api';
+
 class Login extends Component {
-   
+
 
     constructor(props) {
         super(props);
         this.state = {
-          authdata: [],
-          value: "",
-          pageLoaded: false,
-          logged: false
+            email: '',
+            password: '',
+            details: [],
+            isLoaded: false,
         };
-      }
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this)
+    }
+    componentDidMount() {
 
-      componentDidMount() {
-       console.log(this.state.authdata)
-        Api.getAllCards(data => this.setState({ authdata: data}));
-        
-      }
-      
-     // componentWillMount() {
-     //   this._refreshproducts();
-     // }
-   
+        fetch("http://localhost:4000/details")
+            .then(details => details.json())
+            .then(json => {
+                this.setState({
+                    isLoaded: true,
+                    details: json,
+                })
+            });
+    }
+
+
+    // componentWillMount() {
+    //   this._refreshproducts();
+    // }
+
     //   validate(){
     //         if(Details.json[0].details.id===1){
     //             for(var i=0;i<Details.json[0].details.length;i++){
@@ -47,11 +55,49 @@ class Login extends Component {
     //      });
     //    });
     //  }
-   
-    handleSubmit(){
-       
+    handleChange(event) {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        this.setState({
+            [name]: value
+        });
     }
+    handleSubmit = async (e) => {
 
+        if (
+            this.state.email === "" ||
+            this.state.password === ""
+        ) {
+            alert("All fields are Mandatory");
+        } else {
+            var {isLoaded,details } =this.state;
+                 if(!isLoaded) {
+                     return <div>Loading.....</div>;
+                 }
+                 else{
+        
+                    
+                        {details.map(details => (
+                            <ul>
+                            <li key={details.id}>
+                                E-Mail Address:{details.email} | Password:{details.password}
+                            </li>
+                            </ul>
+                        ))};
+                        
+            
+            // e.preventDefault();
+            
+            //   try {
+            //     await details.json(details.email, details.password);
+            //     alert("Logged in");
+            //   } catch (e) {
+            //     alert(e.message);
+            //   }
+            }
+        }
+    }
     render() {
         return (
             <div className="FormCenter">
@@ -67,12 +113,30 @@ class Login extends Component {
                     </div>
 
                     <div className="FormField">
-                        <button className="FormField__Button mr-20" type='submit'>Login</button> <Link to="/" className="FormField__Link">Create an account</Link>
+                        <button className="FormField__Button mr-20" type='submit' onClick={this.handleSubmit}>Login</button> <Link to="/" className="FormField__Link">Create an account</Link>
                     </div>
                 </form>
             </div>
         );
     }
+    // render() {
+    //     var {isLoaded,items } =this.state;
+    //     if(!isLoaded) {
+    //         return <div>Loading.....</div>;
+    //     }
+    //     else{
+    //         return(
+    //             <div className="FormCenter">
+    //                 <ul>
+    //                     {items.map(item => (
+    //                         <li key ={item.id}>
+    //                             E-Mail Address:{item.email} | Password:{item.password}
+    //                             </li>
+    //                     ))};
+    //                     </ul>
+    //                     </div>
+    //         )
+    //     }
 }
 
 export default Login;
